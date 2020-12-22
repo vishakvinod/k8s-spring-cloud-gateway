@@ -1,0 +1,99 @@
+---
+apiVersion: "v1"
+kind: "List"
+items:
+- apiVersion: "v1"
+  kind: "ServiceAccount"
+  metadata:
+    labels:
+      app: "toys-bestseller"
+      version: "1.0-SNAPSHOT"
+      group: "z00427ka"
+    name: "toys-bestseller"
+- apiVersion: "v1"
+  kind: "Service"
+  metadata:
+    labels:
+      app: "toys-bestseller"
+      version: "1.0-SNAPSHOT"
+      group: "z00427ka"
+    name: "toys-bestseller"
+  spec:
+    ports:
+    - name: "http"
+      port: 8081
+      targetPort: 8081
+    selector:
+      app: "toys-bestseller"
+      version: "1.0-SNAPSHOT"
+      group: "z00427ka"
+    type: "NodePort"
+- apiVersion: "rbac.authorization.k8s.io/v1"
+  kind: "RoleBinding"
+  metadata:
+    labels:
+      app: "toys-bestseller"
+      version: "1.0-SNAPSHOT"
+      group: "z00427ka"
+    name: "toys-bestseller:view"
+  roleRef:
+    kind: "ClusterRole"
+    apiGroup: "rbac.authorization.k8s.io"
+    name: "view"
+  subjects:
+  - kind: "ServiceAccount"
+    name: "toys-bestseller"
+- apiVersion: "apps/v1"
+  kind: "Deployment"
+  metadata:
+    labels:
+      app: "toys-bestseller"
+      version: "1.0-SNAPSHOT"
+      group: "z00427ka"
+    name: "toys-bestseller"
+  spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        app: "toys-bestseller"
+        version: "1.0-SNAPSHOT"
+        group: "z00427ka"
+    template:
+      metadata:
+        labels:
+          app: "toys-bestseller"
+          version: "1.0-SNAPSHOT"
+          group: "z00427ka"
+      spec:
+        containers:
+        - env:
+          - name: "KUBERNETES_NAMESPACE"
+            valueFrom:
+              fieldRef:
+                fieldPath: "metadata.namespace"
+          image: "vishakvinod/docker/toys-bestseller:1.1-SNAPSHOT"
+          imagePullPolicy: "IfNotPresent"
+          livenessProbe:
+            httpGet:
+              path: "/actuator/health"
+              port: 8081
+              scheme: "HTTP"
+            initialDelaySeconds: 0
+            periodSeconds: 30
+            timeoutSeconds: 10
+          name: "toys-bestseller"
+          ports:
+          - containerPort: 8081
+            name: "http"
+            protocol: "TCP"
+          readinessProbe:
+            httpGet:
+              path: "/actuator/health"
+              port: 8081
+              scheme: "HTTP"
+            initialDelaySeconds: 0
+            periodSeconds: 30
+            timeoutSeconds: 10
+        serviceAccount: "toys-bestseller"
+        imagePullSecrets:
+          - name: regcred

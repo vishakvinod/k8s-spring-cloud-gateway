@@ -1,0 +1,19 @@
+spring:
+  cloud:
+    loadbalancer:
+      ribbon:
+        enabled: false
+    kubernetes:
+      enabled: true
+      reload:
+        enabled: true
+      config:
+        sources:
+          - name: gateway-configmap
+eureka:
+  client:
+    enabled: false
+
+dekorate:
+  kubernetes:
+    serviceType: "NodePort"
