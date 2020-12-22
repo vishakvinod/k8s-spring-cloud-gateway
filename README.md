@@ -25,6 +25,7 @@ kubectl create --filename spring-cloud-k8s-demo/kubernetes/toy-bestseller-kubern
 kubectl create --filename spring-cloud-k8s-demo/kubernetes/fashion-bestseller-kubernetes.yml  -n wb-test
 kubectl create --filename spring-cloud-k8s-demo/kubernetes/hot-deals-kubernetes.yml  -n wb-test
 kubectl create --filename spring-cloud-k8s-demo/kubernetes/gateway-kubernetes.yml  -n wb-test
+kubectl create --filename spring-cloud-k8s-demo/kubernetes/gateway-route-configmap.yml  -n wb-test
 ```
 
 ## Testing The Apps
